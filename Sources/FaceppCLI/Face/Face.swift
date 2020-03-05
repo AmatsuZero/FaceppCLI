@@ -20,8 +20,11 @@ struct FacialRecognition: ParsableCommand {
         commandName: "face",
         abstract: "人脸识别",
         subcommands: [
-            FaceppDetect.self,
-            FaceBeautyCommand.self
+            FaceppDetectCommand.self,
+            FaceppCompareCommand.self,
+            FacesetCommand.self,
+            FaceBeautifyCommand.self,
+            FaceppFeaturesCommand.self
         ]
     )
 }

@@ -32,6 +32,9 @@ extension FaceppRectangle: ExpressibleByArgument {
 protocol FaceCLIBaseCommand: ParsableCommand {
     var apiKey: String? { get set }
     var apiSecret: String? { get set }
+    var checkParams: Bool { get set }
+    var timeout: TimeInterval { get set }
+    var metrics: Bool { set get }
 }
 
 extension FaceCLIBaseCommand {
@@ -48,16 +51,30 @@ protocol FaceCLIBasicCommand: FaceCLIBaseCommand {
     var imageURL: String? { get set }
     var imageFile: String? { get set }
     var imageBase64: String? { get set }
-    var checkParams: Bool { get set }
-    var timeoutInterval: TimeInterval { get set }
+}
+
+extension FaceppRequestConfigProtocol {
+    mutating func setup(_ command: FaceCLIBaseCommand) {
+        timeoutInterval = command.timeout
+        needCheckParams = command.checkParams
+        if #available(OSX 10.12, *), command.metrics {
+            metricsReporter = FaceppConfig.currentUser
+        }
+    }
 }
 
 extension FaceppBaseRequest {
     convenience init(_ command: FaceCLIBasicCommand) throws {
         self.init()
         try command.setup()
-        timeoutInterval = command.timeoutInterval
+        timeoutInterval = command.timeout
         needCheckParams = command.checkParams
+        if #available(OSX 10.12, *), command.metrics {
+            metricsReporter = FaceppConfig.currentUser
+        }
+        if #available(OSX 10.12, *), command.metrics {
+            metricsReporter = FaceppConfig.currentUser
+        }
         if let url = command.imageURL {
             imageURL = URL(string: url)
         }
@@ -66,6 +83,17 @@ extension FaceppBaseRequest {
         }
         imageBase64 = command.imageBase64
     }
+}
+
+func commonResponseHandler<R: FaceppResponseProtocol>(_ sema: DispatchSemaphore,
+                                                      error: Swift.Error? = nil,
+                                                      resp: R? = nil) {
+    guard error == nil else {
+        leave(error: error)
+        return
+    }
+    writeMessage(resp)
+    sema.signal()
 }
 
 enum OutputType {

@@ -11,7 +11,7 @@ import FaceppSwift
 
 let configFileURL = configDir?.appendingPathComponent("config")
 
-struct FaceppConfig: Codable {
+class FaceppConfig: Codable {
     var key: String
     var secret: String
     
@@ -23,12 +23,24 @@ struct FaceppConfig: Codable {
         return try? JSONDecoder().decode(FaceppConfig.self, from: data)
     }()
     
+    init(key: String, secret: String) {
+        self.key = key
+        self.secret = secret
+    }
+    
     func save() throws {
         guard let url = configFileURL else {
             return
         }
         let data = try JSONEncoder().encode(self)
         try data.write(to: url)
+    }
+}
+
+extension FaceppConfig: FaceppMetricsReporter {
+    @available(OSX 10.12, *)
+    func option(_ option: FaceppRequestConfigProtocol, task: URLSessionTask, didFinishCollecting metrics: URLSessionTaskMetrics) {
+        print(metrics)
     }
 }
 
@@ -50,3 +62,8 @@ struct FaceppSetup: ParsableCommand {
     }
 }
 
+func semaRun(_ value: Int = 0, block: (DispatchSemaphore) -> Void) {
+    let sema = DispatchSemaphore(value: value)
+    block(sema)
+    sema.wait()
+}

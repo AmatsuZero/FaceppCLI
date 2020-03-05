@@ -15,13 +15,11 @@ final class FaceppCLITests: XCTestCase {
         guard #available(macOS 10.13, *) else {
             fatalError()
         }
-        let process = getProcess([
+        _ = try getProcess([
             "setup",
             "--key", key!,
             "--secret", secret!
         ])
-        try process.run()
-        process.waitUntilExit()
         guard let url = FileManager.default
             .urls(for: .documentDirectory, in: .userDomainMask).first?
             .appendingPathComponent("com.daubertjiang.faceppcli")
@@ -34,24 +32,40 @@ final class FaceppCLITests: XCTestCase {
     }
     
     func testFaceDetect() throws {
-        guard #available(macOS 10.13, *) else {
-            fatalError()
-        }
-        let process = getProcess([
+        let output = try getProcess([
             "face", "detect",
+            "--enable-metrics",
+            "-T", "30.0",
             "--url", "http://5b0988e595225.cdn.sohucs.com/images/20191103/9c9bdf0a89a44cb59d16cae007951af8.jpeg",
-            "--timeoutInterval", "30"
         ])
-        
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        
-        try process.run()
-        process.waitUntilExit()
-        
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)
         XCTAssertNotNil(output)
+        print(output!)
+        XCTAssertTrue(!output!.contains("errorMessage"))
+    }
+    
+    func testCompare() throws {
+        let output = try getProcess([
+            "face", "compare",
+            "--enable-metrics",
+            "-T", "30.0",
+            "--url1",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/7/7d/Lenna_%28test_image%29.png/440px-Lenna_%28test_image%29.png",
+            "--url2", "https://bellard.org/bpg/lena5.jpg"
+        ])
+        XCTAssertNotNil(output)
+        print(output!)
+        XCTAssertTrue(!output!.contains("errorMessage"))
+    }
+    
+    func testFeatures() throws {
+        let output = try getProcess([
+            "face", "features",
+            "--enable-metrics",
+            "-T", "30.0",
+            "--url", "https://bellard.org/bpg/lena5.jpg",
+        ])
+        XCTAssertNotNil(output)
+        print(output!)
         XCTAssertTrue(!output!.contains("errorMessage"))
     }
     
@@ -67,7 +81,7 @@ final class FaceppCLITests: XCTestCase {
         #endif
     }
     
-    func getProcess(_ arguments: [String]) -> Process {
+    func getProcess(_ arguments: [String]) throws -> String? {
         guard #available(macOS 10.13, *) else {
             fatalError()
         }
@@ -75,10 +89,21 @@ final class FaceppCLITests: XCTestCase {
         let process = Process()
         process.executableURL = fooBinary
         process.arguments = arguments
-        return process
+        
+        
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        
+        try process.run()
+        process.waitUntilExit()
+        
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        return String(data: data, encoding: .utf8)
     }
     
     static var allTests = [
         ("testSetup", testSetup),
+        ("testFaceDetect", testFaceDetect),
+        ("testCompare", testCompare)
     ]
 }

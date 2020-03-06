@@ -9,18 +9,14 @@ import Foundation
 import FaceppSwift
 import ArgumentParser
 
-extension BeautifyV2Option.FilterType: ExpressibleByArgument, Decodable {
-    
-}
+extension BeautifyV2Option.FilterType: ExpressibleByArgument, Decodable {}
 
-struct FaceBeautifyCommand: FaceCLIBasicCommand {
+struct FppFaceBeautifyCommand: FaceCLIBasicCommand {
     static var configuration = CommandConfiguration(
         commandName: "beautify",
         abstract: """
-        V1:
-        对图片进行美颜和美白。
-        V2:
-        支持对图片中人像进行对美颜美型处理，以及对图像增加滤镜等。美颜包括：美白和磨皮；美型包括：大眼、瘦脸、小脸和去眉毛等处理。
+        V1: 对图片进行美颜和美白。
+        V2: 支持对图片中人像进行对美颜美型处理，以及对图像增加滤镜等。美颜包括：美白和磨皮；美型包括：大眼、瘦脸、小脸和去眉毛等处理。
         """,
         discussion: """
         图片要求:
@@ -88,7 +84,7 @@ struct FaceBeautifyCommand: FaceCLIBasicCommand {
     }
 }
 
-private extension FaceBeautifyCommand {
+private extension FppFaceBeautifyCommand {
     func runV1(_ sema: DispatchSemaphore) throws {
         let option = try BeautifyV1Option(self)
         option.smoothing = smoothing

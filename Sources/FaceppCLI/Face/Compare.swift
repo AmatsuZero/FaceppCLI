@@ -9,7 +9,7 @@ import ArgumentParser
 import FaceppSwift
 import Foundation
 
-struct FaceppCompareCommand: FaceCLIBaseCommand {
+struct FppFaceCompareCommand: FaceCLIBaseCommand {
     static var configuration = CommandConfiguration(
         commandName: "compare",
         abstract: """

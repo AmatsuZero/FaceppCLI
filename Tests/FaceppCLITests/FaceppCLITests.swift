@@ -35,7 +35,6 @@ final class FaceppCLITests: XCTestCase {
         let output = try getProcess([
             "face", "detect",
             "--enable-metrics",
-            "-T", "30.0",
             "--url", "http://5b0988e595225.cdn.sohucs.com/images/20191103/9c9bdf0a89a44cb59d16cae007951af8.jpeg",
         ])
         XCTAssertNotNil(output)
@@ -47,7 +46,6 @@ final class FaceppCLITests: XCTestCase {
         let output = try getProcess([
             "face", "compare",
             "--enable-metrics",
-            "-T", "30.0",
             "--url1",
             "https://upload.wikimedia.org/wikipedia/en/thumb/7/7d/Lenna_%28test_image%29.png/440px-Lenna_%28test_image%29.png",
             "--url2", "https://bellard.org/bpg/lena5.jpg"
@@ -61,8 +59,51 @@ final class FaceppCLITests: XCTestCase {
         let output = try getProcess([
             "face", "features",
             "--enable-metrics",
+            "--url", "https://bellard.org/bpg/lena5.jpg",
+        ])
+        XCTAssertNotNil(output)
+        print(output!)
+        XCTAssertTrue(!output!.contains("errorMessage"))
+    }
+    
+    func testDenseLandmark() throws {
+        let output = try getProcess([
+            "face", "thousandlandmark",
+            "--enable-metrics",
             "-T", "30.0",
             "--url", "https://bellard.org/bpg/lena5.jpg",
+            "nose"
+        ])
+        XCTAssertNotNil(output)
+        print(output!)
+        XCTAssertTrue(!output!.contains("errorMessage"))
+    }
+    
+    func testSkinAnalyze() throws {
+        let output = try getProcess([
+            "face", "analyze",
+            "--enable-metrics",
+            "-T", "30.0",
+            "--url",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Candye_Kane_2012.jpg/500px-Candye_Kane_2012.jpg",
+            "--enable-advanced"
+        ])
+        XCTAssertNotNil(output)
+        print(output!)
+        XCTAssertTrue(!output!.contains("errorMessage"))
+    }
+    
+    func testModel() throws {
+        let output = try getProcess([
+            "face", "model",
+            "--enable-metrics",
+            "-T", "30.0",
+            "--url1",
+            "https://bellard.org/bpg/lena5.jpg",
+            "--output",
+            "~/Desktop/output",
+            "--mtl",
+            "--texture",
         ])
         XCTAssertNotNil(output)
         print(output!)
@@ -104,6 +145,10 @@ final class FaceppCLITests: XCTestCase {
     static var allTests = [
         ("testSetup", testSetup),
         ("testFaceDetect", testFaceDetect),
-        ("testCompare", testCompare)
+        ("testCompare", testCompare),
+        ("testFeatures", testFeatures),
+        ("testDenseLandmark", testDenseLandmark),
+        ("testSkinAnalyze", testSkinAnalyze),
+        ("testModel", testModel)
     ]
 }

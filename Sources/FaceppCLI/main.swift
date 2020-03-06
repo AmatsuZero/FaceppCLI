@@ -27,10 +27,10 @@ struct Facepp: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Face++ 命令行工具",
         subcommands: [
-            FaceppSetup.self,
-            FacialRecognition.self
+            FppSetupCommand.self,
+            FppFacialRecognition.self
         ],
-        defaultSubcommand: FaceppSetup.self)
+        defaultSubcommand: FppSetupCommand.self)
 }
 
 Facepp.main()

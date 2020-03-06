@@ -39,8 +39,8 @@ protocol FaceCLIBaseCommand: ParsableCommand {
 
 extension FaceCLIBaseCommand {
     func setup() throws {
-        guard let key = apiKey ?? FaceppConfig.currentUser?.key,
-            let secret = apiSecret ?? FaceppConfig.currentUser?.secret else {
+        guard let key = apiKey ?? FppConfig.currentUser?.key,
+            let secret = apiSecret ?? FppConfig.currentUser?.secret else {
                 throw RuntimeError("缺少 api key 和 api secret")
         }
         FaceppClient.initialization(key: key, secret: secret)
@@ -58,7 +58,7 @@ extension FaceppRequestConfigProtocol {
         timeoutInterval = command.timeout
         needCheckParams = command.checkParams
         if #available(OSX 10.12, *), command.metrics {
-            metricsReporter = FaceppConfig.currentUser
+            metricsReporter = FppConfig.currentUser
         }
     }
 }
@@ -70,10 +70,10 @@ extension FaceppBaseRequest {
         timeoutInterval = command.timeout
         needCheckParams = command.checkParams
         if #available(OSX 10.12, *), command.metrics {
-            metricsReporter = FaceppConfig.currentUser
+            metricsReporter = FppConfig.currentUser
         }
         if #available(OSX 10.12, *), command.metrics {
-            metricsReporter = FaceppConfig.currentUser
+            metricsReporter = FppConfig.currentUser
         }
         if let url = command.imageURL {
             imageURL = URL(string: url)

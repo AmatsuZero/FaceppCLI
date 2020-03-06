@@ -8,23 +8,29 @@
 import Foundation
 import ArgumentParser
 
-struct FacesetCommand: ParsableCommand {
+struct FppFacesetCommand: ParsableCommand {
     static var configuration =  CommandConfiguration(
         commandName: "faceset",
         abstract: "人脸集合",
-        subcommands: [])
+        subcommands: [
+           
+        ])
 }
 
-struct FacialRecognition: ParsableCommand {
+struct FppFacialRecognition: ParsableCommand {
     static var configuration = CommandConfiguration(
         commandName: "face",
         abstract: "人脸识别",
         subcommands: [
-            FaceppDetectCommand.self,
-            FaceppCompareCommand.self,
-            FacesetCommand.self,
-            FaceBeautifyCommand.self,
-            FaceppFeaturesCommand.self
+            FppDetectCommand.self,
+            FppFaceCompareCommand.self,
+            FppFaceSearchCommand.self,
+            FppFacesetCommand.self,
+            FppFaceBeautifyCommand.self,
+            FppDenseLandmarkCommand.self,
+            FppFeaturesCommand.self,
+            FppSkinAnalyzeCommand.self,
+            FppFaceModelCommand.self
         ]
     )
 }

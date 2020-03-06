@@ -11,16 +11,16 @@ import FaceppSwift
 
 let configFileURL = configDir?.appendingPathComponent("config")
 
-class FaceppConfig: Codable {
+class FppConfig: Codable {
     var key: String
     var secret: String
     
-    static var currentUser: FaceppConfig? = {
+    static var currentUser: FppConfig? = {
         guard let url = configFileURL,
             let data = try? Data(contentsOf: url) else {
             return nil
         }
-        return try? JSONDecoder().decode(FaceppConfig.self, from: data)
+        return try? JSONDecoder().decode(FppConfig.self, from: data)
     }()
     
     init(key: String, secret: String) {
@@ -37,14 +37,14 @@ class FaceppConfig: Codable {
     }
 }
 
-extension FaceppConfig: FaceppMetricsReporter {
+extension FppConfig: FaceppMetricsReporter {
     @available(OSX 10.12, *)
     func option(_ option: FaceppRequestConfigProtocol, task: URLSessionTask, didFinishCollecting metrics: URLSessionTaskMetrics) {
         print(metrics)
     }
 }
 
-struct FaceppSetup: ParsableCommand {
+struct FppSetupCommand: ParsableCommand {
     static var configuration =  CommandConfiguration(
         commandName: "setup",
         abstract: "执行设置"
@@ -57,8 +57,8 @@ struct FaceppSetup: ParsableCommand {
     var secret: String
     
     func run() throws {
-        FaceppConfig.currentUser = FaceppConfig(key: key, secret: secret)
-        try FaceppConfig.currentUser?.save()
+        FppConfig.currentUser = FppConfig(key: key, secret: secret)
+        try FppConfig.currentUser?.save()
     }
 }
 

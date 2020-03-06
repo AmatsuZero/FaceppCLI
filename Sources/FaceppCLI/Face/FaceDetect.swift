@@ -9,32 +9,11 @@ import Foundation
 import ArgumentParser
 import FaceppSwift
 
-extension FaceDetectOption.ReturnAttributes: ExpressibleByArgument, Decodable {
-    
-}
+extension FaceDetectOption.ReturnAttributes: ExpressibleByArgument, Decodable {}
 
-extension FaceDetectOption.ReturnLandmark: ExpressibleByArgument, Decodable {
-    
-}
+extension FaceDetectOption.ReturnLandmark: ExpressibleByArgument, Decodable {}
 
-extension Set: ExpressibleByArgument where Element == FaceDetectOption.ReturnAttributes {
-    public init?(argument: String) {
-        let values = argument
-            .components(separatedBy: ",")
-            .map { FaceDetectOption.ReturnAttributes(argument: $0) }
-            .compactMap { $0 }
-        guard !values.isEmpty else {
-            return nil
-        }
-        if values.contains(.none) {
-            self = [.none]
-        } else {
-            self = Set(values)
-        }
-    }
-}
-
-struct FaceppDetectCommand: FaceCLIBasicCommand {
+struct FppDetectCommand: FaceCLIBasicCommand {
     static var configuration =  CommandConfiguration(
         commandName: "detect",
         abstract: """
@@ -85,8 +64,8 @@ struct FaceppDetectCommand: FaceCLIBasicCommand {
     @Option(name: .customLong("landmark"), default: .no, help: "是否检测并返回人脸关键点")
     var returnLandmark: FaceDetectOption.ReturnLandmark
 
-    @Option(name: .customLong("attributes"), default: [.none], help: "是否检测并返回人脸关键点")
-    var returnAttributes: Set<FaceDetectOption.ReturnAttributes>
+    @Option(help: "是否检测并返回人脸关键点")
+    var attributes: [FaceDetectOption.ReturnAttributes]
     
     @Option(name: .shortAndLong, help: "是否指定人脸框位置进行人脸检测")
     var faceRectangle: FaceppRectangle?
@@ -102,7 +81,11 @@ struct FaceppDetectCommand: FaceCLIBasicCommand {
     
     func run() throws {
         let option = try FaceDetectOption(self)
-        option.returnAttributes = returnAttributes
+        if attributes.contains(.none) {
+            option.returnAttributes = [.none]
+        } else {
+            option.returnAttributes = Set(attributes)
+        }
         option.returnLandmark = returnLandmark
         if let flag = calculateAll {
            option.calculateAll = flag == 1

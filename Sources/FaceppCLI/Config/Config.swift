@@ -15,6 +15,10 @@ class FppConfig: Codable {
     var key: String
     var secret: String
     
+    static let session: URLSession = {
+        return URLSession(configuration: .default)
+    }()
+    
     static var currentUser: FppConfig? = {
         guard let url = configFileURL,
             let data = try? Data(contentsOf: url) else {
@@ -39,7 +43,9 @@ class FppConfig: Codable {
 
 extension FppConfig: FaceppMetricsReporter {
     @available(OSX 10.12, *)
-    func option(_ option: FaceppRequestConfigProtocol, task: URLSessionTask, didFinishCollecting metrics: URLSessionTaskMetrics) {
+    func option(_ option: FaceppRequestConfigProtocol,
+                task: URLSessionTask,
+                didFinishCollecting metrics: URLSessionTaskMetrics) {
         print(metrics)
     }
 }

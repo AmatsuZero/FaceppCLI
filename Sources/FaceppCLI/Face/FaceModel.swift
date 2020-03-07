@@ -81,6 +81,8 @@ struct FppFaceModelCommand: FaceCLIBaseCommand {
         option.imageBase641 = imageBase641
         option.imageBase642 = imageBase642
         option.imageBase643 = imageBase643
+        option.needMtl = mtl
+        option.needTexture = texture
         
         if let url = imageURL1 {
             option.imageURL1 = URL(string: url)
@@ -109,7 +111,7 @@ struct FppFaceModelCommand: FaceCLIBaseCommand {
                     do {
                         try resp?.saveFaceModel(in: .init(fileURLWithPath: url))
                     } catch let e {
-                        leave(error: e)
+                        writeError(e)
                     }
                 }
                 commonResponseHandler(sema, error: error, resp: resp)

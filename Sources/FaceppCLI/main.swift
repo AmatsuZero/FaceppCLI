@@ -17,20 +17,28 @@ func leave(error: Error? = nil) {
 let configDir = FileManager.default
     .urls(for: .documentDirectory, in: .userDomainMask).first?
     .appendingPathComponent("com.daubertjiang.faceppcli")
-
-if let path = configDir?.path,
-    !FileManager.default.fileExists(atPath: path) {
-    try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-}
+    .createDirIfNotExist()
 
 struct Facepp: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Face++ 命令行工具",
         subcommands: [
             FppSetupCommand.self,
-            FppFacialRecognition.self
-        ],
-        defaultSubcommand: FppSetupCommand.self)
+            FppFacialRecognition.self,
+            FppImageUitlCommand.self,
+            FppToysCommand.self
+        ])
+    
+    @Flag(name: .shortAndLong, help: "版本号")
+    var version: Bool
+    
+    func run() throws {
+        var output = ""
+        if version {
+            output += kVersion
+        }
+        print(output)
+    }
 }
 
 Facepp.main()

@@ -101,9 +101,9 @@ final class FaceppCLITests: XCTestCase {
             "--url1",
             "https://bellard.org/bpg/lena5.jpg",
             "--output",
-            "~/Desktop/output",
+            "/Users/jiangzhenhua/Desktop/output",
             "--mtl",
-            "--texture",
+            " ",
         ])
         XCTAssertNotNil(output)
         print(output!)

@@ -10,6 +10,8 @@ import ArgumentParser
 import FaceppSwift
 import SwiftGD
 
+let kVersion = "0.0.1"
+
 struct RuntimeError: Swift.Error, CustomStringConvertible {
     var description: String
     init(_ desc: String) {

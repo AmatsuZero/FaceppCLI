@@ -19,8 +19,8 @@ struct FppNokiaImage: ParsableCommand {
         discussion: "仅限于 macOS 平台"
     )
     
-    let imageURL = URL(string: "https://raw.githubusercontent.com/AmatsuZero/FaceppCLI/master/Resources/NokiaMessage.jpg")
-    let fontURL = URL(string: "https://raw.githubusercontent.com/AmatsuZero/FaceppCLI/master/Resources/nokia.ttf")
+    let imageURL = URL(string: "https://raw.githubusercontent.com/AmatsuZero/FaceppCLI/master/Resources/Nokia/NokiaMessage.jpg")
+    let fontURL = URL(string: "https://raw.githubusercontent.com/AmatsuZero/FaceppCLI/master/Resources/Nokia/nokia.ttf")
     let dirURL: URL? = {
         return  FppToysCommand.dirURL?.appendingPathComponent("Nokia").createDirIfNotExist()
     }()
